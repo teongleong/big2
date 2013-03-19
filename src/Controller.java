@@ -74,7 +74,6 @@ public class Controller {
 //            }
 //        }
 
-
         //make shoe
         Shoe shoe = new Shoe();
         //shuffle shoe

@@ -33,7 +33,7 @@ public class FullPlayer extends Player {
      * @param card
      */
     @Override
-    protected void addCard(Card card) {
+    public void addCard(Card card) { // was protected
         super.addCard(card);
 //        opponentsHand.removeCard(card);
     }
@@ -310,7 +310,6 @@ public class FullPlayer extends Player {
             numOfWins = recurseGetLegalTrick(player0Hand, player1Hand, player2Hand, player3Hand,
                     trick, (++currPlayer) % 4, currDepth++, firstPlayer, numPasses, trickToPlay, numOfWins);
         }
-
 
         return numOfWins;//stub
     }

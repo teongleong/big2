@@ -6,7 +6,13 @@ import java.util.ArrayList;
  * @author Tay Chit Chin, Lee Chun Kit, Chuah Teong Leong
  */
 public class Card implements Comparable<Card> {
-
+	
+	//String valentine = "\u2665";
+	static char spade_char = '\u2660';
+	static char club_char = '\u2663';
+	static char heart_char = '\u2665';
+	static char diamond_char = '\u2666';
+	
     /**
      * Enumeration of rank of a card.
      * Each Rank contains a value for comparison and a char representation.
@@ -106,13 +112,16 @@ public class Card implements Comparable<Card> {
         /**
          * Enum of diamonds
          */
-        DIAMONDS(0, 'D'), /**
+        DIAMONDS(0, 'D'), 
+        /**
          * Enum of clubs
          */
-        CLUBS(1, 'C'), /**
+        CLUBS(1, 'C'), 
+        /**
          * Enum of hearts
          */
-        HEARTS(2, 'H'), /**
+        HEARTS(2, 'H'), 
+        /**
          * Enum of spades
          */
         SPADES(3, 'S');
@@ -214,7 +223,14 @@ public class Card implements Comparable<Card> {
     public final int compareTo(Card card) {
         //Card other = (Card) card;
         //Card self = this;
-        return (this.rank().value() * 4 + this.suit().value()) - (card.rank().value() * 4 + card.suit().value());
+    	
+    	if (card != null ) {
+    		int this_value = (this.rank().value() * 4 + this.suit().value());
+    		int that_value = (card.rank().value() * 4 + card.suit().value());
+    		return this_value - that_value ;
+    	} else  {
+    		return -1;
+    	}
     }
 
     /**
@@ -288,7 +304,22 @@ public class Card implements Comparable<Card> {
      */
     @Override
     public String toString() {
-        return rank.representationOfRank + "" + suit.representationOfSuit;
+        return rank.representationOfRank() + "" + suit_symbol(suit.representationOfSuit()) ;
+    }
+    
+    public String suit_symbol (char suit) {
+    	switch( suit ) {
+    		case 'S':
+    			return String.valueOf(spade_char);
+    		case 'H':
+    			return String.valueOf(heart_char);
+    		case 'C':
+    			return String.valueOf(club_char);
+    		case 'D':
+    			return String.valueOf(diamond_char);
+    		default :
+    			return "Error converting suit to symbol "+suit;
+    	}
     }
 
     /**

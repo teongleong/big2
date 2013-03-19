@@ -83,7 +83,6 @@ public class Trick extends ListOfCards implements Comparable<Trick> {
             } else {
                 return this.listOfCards.get(0).compareTo(specifiedTrick.listOfCards.get(0));
             }
-
         } else //trick of five
         //  straight < flush < full house < four of a kind < straight flush
         {
