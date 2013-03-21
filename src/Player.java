@@ -61,7 +61,7 @@ public abstract class Player {
      * 
      * @return ArrayList of Cards of a legal trick.
      */
-    protected abstract Trick getLegalTrick();
+    protected abstract Trick think();
 
     /**
      * Checks if the Player's Hand has this specified Card.<!-- --> Method is

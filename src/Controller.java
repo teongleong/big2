@@ -81,6 +81,7 @@ public class Controller {
         if (debug == Debug.DEBUG) {
             System.out.println("Shoe cards: " + shoe);
         }
+        
         //distribute cards to all players
         int i = 0;
         while (shoe.hasCard()) {
@@ -121,7 +122,10 @@ public class Controller {
 
             System.out.print("Your turn, ");
             printPlayerCards(j);
-            historyOfTricks.add(player[j].getLegalTrick());
+            
+            // players' decisions
+            historyOfTricks.add(player[j].think());
+            
             System.out.println("Player " + j + ", " + playerNames[j] + " plays: " +
                     historyOfTricks.get(historyOfTricks.size() - 1));
 
@@ -205,6 +209,8 @@ public class Controller {
         return isWellFormed;
     }
 
+    
+    // TODO can be possibly simplified 
     public static Trick getCurrentTrick() {
         int historySize = Controller.historyOfTricks.size();
         //should not happen because computerplayer should implement
