@@ -60,7 +60,7 @@ public class FullPlayer extends Player {
                 Controller.getCurrentTrick(), this.playerNumber, 0, this.playerNumber, 0, new Trick());
 
         removeCards(trickOut);
-        System.out.println(myHand + " size: " + myHand.listOfCards.size());
+        Controller.controllerPrint(myHand + " size: " + myHand.listOfCards.size());
         return trickOut;//stub
     }
     
@@ -103,7 +103,9 @@ public class FullPlayer extends Player {
     			break;
     	}
     	
-    	ArrayList<Trick> myValidTricks = currHand.getLegalTricks( currTrick );
+    	ArrayList<Trick> possibleTricks = currHand.getAllTricks(); // all possible permutation of tricks
+    	ArrayList<Trick> myValidTricks = currHand.getLegalTricks( currTrick, possibleTricks );
+    	//System.out.println("valid tricks: " + myValidTricks);
     	
     	if ( Hand.lastTrickLeft( myValidTricks ) )
     		return myValidTricks.get(0);
@@ -146,7 +148,7 @@ public class FullPlayer extends Player {
     	}
     	int maxWins = Collections.max(numOfWinArray);
     	int maxWinsTrickIndex = numOfWinArray.indexOf(maxWins);
-    	System.out.println("max number wins (depth 4 search) is: " + maxWins);
+    	Controller.controllerPrint("max number wins (depth 4 search) is: " + maxWins);
     	return myValidTricks.get(maxWinsTrickIndex);//stub
     }
 
@@ -190,7 +192,8 @@ public class FullPlayer extends Player {
     			break;
     	}
     	
-    	ArrayList<Trick> myValidTricks = currHand.getLegalTricks( currTrick );
+    	ArrayList<Trick> possibleTricks = currHand.getAllTricks();
+    	ArrayList<Trick> myValidTricks = currHand.getLegalTricks( currTrick, possibleTricks );
     	
     	for (Trick trick : myValidTricks) {
     		if (trick.trickType() == Trick.TrickType.PASS) {

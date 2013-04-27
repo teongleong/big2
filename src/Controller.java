@@ -32,6 +32,18 @@ public class Controller {
     static ArrayList<Trick> historyOfTricks = new ArrayList<Trick>();
     
     static int threeDiamondPlayer = -1;
+    
+    static boolean quietMode = true;
+    
+    public static void controllerPrint(String str) {
+    	if (!quietMode) System.out.println(str);
+    }
+    
+    public static void resetGame() {
+    	historyOfTricks = new ArrayList<Trick>();
+    }
+    
+    public static int [] scoreCount = {0,0,0,0};
 
     /**
      * main method
@@ -39,7 +51,7 @@ public class Controller {
      * @param args
      * @throws java.lang.Exception
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[]) {
 
         if (debug == Debug.DEBUG) {
             System.out.println("Yes we're debugging!");
@@ -47,10 +59,13 @@ public class Controller {
 
         int temp;
 
-        for (int i = 0; i < 4; i++) {
+        /*for (int i = 0; i < 4; i++) {
             player[i] = new FullPlayer(i);
-        }
-
+        }*/
+        player[0] = new FullPlayer(0);
+        player[1] = new PassivePlayer(1);
+        player[2] = new HumanPlayer(2);
+        player[3] = new PassivePlayer(3);
 
 //        boolean[] isHumanPlayer = new boolean[4];//true means human player
 //        Scanner scanner = new Scanner(System.in);
@@ -74,10 +89,30 @@ public class Controller {
 //            }
 //        }
 
-        //make shoe
-        Shoe shoe = new Shoe();
-        //shuffle shoe
-        shoe.shuffle();
+        
+        int roundsToPlay = 50;
+        while (roundsToPlay > 0) {
+        	try { 
+        		startNewGame();
+        		resetGame();
+        		roundsToPlay--;
+            	System.out.println("rtp "+roundsToPlay);
+        	} catch (Exception e) {} //ignore for now
+        }
+        System.out.println("Final Score "+ 
+        					scoreCount[0] + " " +
+        					scoreCount[1] + " " +
+        					scoreCount[2] + " " +
+        					scoreCount[3] );
+         
+        System.exit(0);
+    }
+    
+    public static void startNewGame() throws Exception {
+    	
+        Shoe shoe = new Shoe(); //make shoe
+        shoe.shuffle(); //shuffle shoe
+        
         if (debug == Debug.DEBUG) {
             System.out.println("Shoe cards: " + shoe);
         }
@@ -98,43 +133,55 @@ public class Controller {
         for (i = 0; i < 4; i++) {
             printPlayerCards(i);
         }
+        
         for (i = 0; i < 4; i++) {
             if (player[i].hasThisCard(threeDiamond)) {
                 threeDiamondPlayer = i;
-                System.out.println("Player " + i + ", " + playerNames[i] + ", has " + threeDiamond.toStringLong() + ".");
+                controllerPrint("Player " + i + ", " + playerNames[i] + ", has " + threeDiamond.toStringLong() + ".");
                 break;
             }
         }
 
         //start the game playing!!
         for (int j = threeDiamondPlayer; j < 4; j = ++j % 4) {
-            System.out.println("");
-            System.out.println("");
-            System.out.println("Number of cards players 0,1,2,3 have: " + player[0].myHand.size() + "," + player[1].myHand.size() + "," + player[2].myHand.size() + "," + player[3].myHand.size());
-            System.out.println("These are the played cards " + historyOfTricks);
+        	controllerPrint("");
+        	controllerPrint("");
+        	controllerPrint("Number of cards players 0,1,2,3 have: " + player[0].myHand.size() + "," + player[1].myHand.size() + "," + player[2].myHand.size() + "," + player[3].myHand.size());
+            //System.out.println("These are the played cards " + historyOfTricks);
 
-            //for netbeans only; command prompt can comment this out
-            int historySize = historyOfTricks.size();
-            if (historySize >= 3) {
-                System.out.println("Last 3 tricks: [" + historyOfTricks.get(historySize - 3) + "," + historyOfTricks.get(historySize - 2) + "," + historyOfTricks.get(historySize - 1) + "]");
-            }
-            //end for netbeans only   
+        	// printing last 3 tricks
+//            int historySize = historyOfTricks.size();
+//            if (historySize >= 3) {
+//            	controllerPrint("Last 3 tricks: " + historyOfTricks.get(historySize - 3) + "," + historyOfTricks.get(historySize - 2) + "," + historyOfTricks.get(historySize - 1));
+//            } else if (historySize == 2){
+//            	controllerPrint("Last 3 tricks: " + "," + historyOfTricks.get(historySize - 2) + "," + historyOfTricks.get(historySize - 1));
+//            } else if (historySize == 1) {
+//                controllerPrint("Last 3 tricks: " + "," + historyOfTricks.get(historySize - 1));
+//            } else {
+//            	controllerPrint("Last 3 tricks: none");
+//            }
+        	
+        	//printing currTrick (trick to beat)
+        	controllerPrint("Last trick: " + Controller.getCurrentTrick() );
 
-            System.out.print("Your turn, ");
+            controllerPrint("Your turn, ");
             printPlayerCards(j);
             
             // players' decisions
             historyOfTricks.add(player[j].think());
             
             System.out.println("Player " + j + ", " + playerNames[j] + " plays: " +
-                    historyOfTricks.get(historyOfTricks.size() - 1));
-
+                    historyOfTricks.get(historyOfTricks.size() - 1) + " " +  player[0].myHand.size() + " "+  player[0].myHand);
+            
             if (player[j].myHand.isEmpty()) {
-                System.out.println("Congratulation player " + j + ", " + playerNames[j] +
+            	controllerPrint("Congratulation player " + j + ", " + playerNames[j] +
                         ", you have won the game.");
-                System.out.println("By the way, the player with diamond three is " + threeDiamondPlayer);
-                System.out.println("Total number of turns taken is " + historyOfTricks.size());
-                System.exit(0);
+            	controllerPrint("By the way, the player with diamond three is " + threeDiamondPlayer);
+            	controllerPrint("These are the played cards " + historyOfTricks);
+            	controllerPrint("Total number of turns taken is " + historyOfTricks.size());
+            	// keep score
+                scoreCount[j]++;
+            	break;
             }
         }
     }
@@ -208,7 +255,6 @@ public class Controller {
         }
         return isWellFormed;
     }
-
     
     // TODO can be possibly simplified 
     public static Trick getCurrentTrick() {
@@ -248,6 +294,6 @@ public class Controller {
      * @param playerNumber the player number.
      */
     public static void printPlayerCards(int playerNumber) {
-        System.out.println("Player " + playerNumber + ", " + playerNames[playerNumber] + ": " + player[playerNumber] + " size: " + player[playerNumber].myHand.size());
+    	controllerPrint("Player " + playerNumber + ", " + playerNames[playerNumber] + ": " + player[playerNumber] + " size: " + player[playerNumber].myHand.size());
     }
 }

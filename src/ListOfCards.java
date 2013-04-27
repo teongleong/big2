@@ -138,9 +138,9 @@ public abstract class ListOfCards {
      */
     @Override
     public String toString() {
-        if (!sorted) {
+        /*if (!sorted) {
             sort();
-        }
+        }*/
         return listOfCards.toString();
     }
 }

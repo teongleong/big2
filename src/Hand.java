@@ -45,7 +45,37 @@ public class Hand extends ListOfCards {
         }
         return trickArray;
     }
-
+    
+    public Hand sortBySuit() {
+    	Hand to_return = new Hand();
+    	
+    	 //if hand is not sorted, sort it
+        if (!this.isSorted()) {
+            this.sort();
+        }
+    	
+        // get the spades
+    	for (Card card : this.listOfCards ) {
+    		if (card.suit().equals(Card.Suit.SPADES))
+    			to_return.addCard(card);
+    	}
+    	// get the hearts
+    	for (Card card : this.listOfCards ) {
+    		if (card.suit().equals(Card.Suit.HEARTS))
+    			to_return.addCard(card);
+    	}
+    	// get the clubs
+    	for (Card card : this.listOfCards ) {
+    		if (card.suit().equals(Card.Suit.CLUBS))
+    			to_return.addCard(card);
+    	}
+    	// get the diamonds
+    	for (Card card : this.listOfCards ) {
+    		if (card.suit().equals(Card.Suit.DIAMONDS))
+    			to_return.addCard(card);
+    	}
+    	return to_return;
+    }
     
     /**
      * Given a hand, generates an arraylist of all possible single Tricks
@@ -56,9 +86,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
             this.sort();
-        }
+        }*/
 
         for (Card card : this.listOfCards) {
             Trick singleTrick = new Trick(card);
@@ -81,9 +111,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
             this.sort();
-        }
+        }*/
 
         int sizeHand = this.size();
         if (sizeHand >= 2) {
@@ -126,9 +156,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
         trickList.addAll(this.getStraightTricks());
         trickList.addAll(this.getFlushTricks());
         trickList.addAll(this.getFullHouseTricks());
@@ -137,7 +167,7 @@ public class Hand extends ListOfCards {
         return trickList;
     }
 
-    // TODO very inefficient, to optimise
+    // TODO very inefficient, to optimize
     /**
      * Given a hand, generates an arraylist of all possible straight Tricks
      * 
@@ -147,9 +177,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
 
         int size = this.size();
         if (size >= 5) {
@@ -199,9 +229,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+       /* if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
 
         Hand spades = new Hand();
         Hand hearts = new Hand();
@@ -385,9 +415,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
 
         int size = this.size();
         if (size >= 5) {
@@ -458,9 +488,9 @@ public class Hand extends ListOfCards {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
 
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
         int size = this.size();
         if (size >= 5) {
             for (int i = 0; i < size - 3; i++) {
@@ -496,9 +526,9 @@ public class Hand extends ListOfCards {
     public ArrayList<Trick> getStraightFlushTricks() {
         ArrayList<Trick> trickList = new ArrayList<Trick>();
         //if hand is not sorted, sort it
-        if (!this.isSorted()) {
+        /*if (!this.isSorted()) {
         	this.sort();
-        }
+        }*/
         Hand spades = new Hand();
         Hand hearts = new Hand();
         Hand clubs = new Hand();
@@ -732,9 +762,33 @@ public class Hand extends ListOfCards {
     
     //returns all possible legal tricks that can be formed by this hand (not necessarily wellformed)
     // merged into getLegalTricks
-/*    @SuppressWarnings("fallthrough")
-    public ArrayList<Trick> getPossibleTrick( Trick.TrickType currentTrickType ) {
+   /* @SuppressWarnings("fallthrough")
+    public ArrayList<Trick> getPossibleTrick( Trick currTrick ) {
     	
+		ArrayList<Trick> myPossibleTricks;
+		    	
+    	// get appropriate types of tricks (wrt currTrick)
+        if (Controller.historyOfTricks.size() == 0 && currTrick == null) { // this is first player so return all legal tricks possible
+        	myPossibleTricks = this.getAllTricks();
+        } else {
+	        switch (currTrick.trickType()) {
+	            case SINGLE: 		myPossibleTricks = getSingleTricks(); break;
+	            case PAIR: 			myPossibleTricks = getPairTricks(); break;
+	            case STRAIGHTFLUSH: myPossibleTricks = getStraightFlushTricks(); break;
+	            case FOUROFAKIND: 	myPossibleTricks = getFourOfAKindTricks(); break;
+	            case FULLHOUSE: 	myPossibleTricks = getFullHouseTricks(); break;
+	            case FLUSH: 		myPossibleTricks = getFlushTricks(); break;
+	            case STRAIGHT: 		myPossibleTricks = getStraightTricks(); break;
+	            case PASS: 			myPossibleTricks = getAllTricks(); break;
+	            default: 			myPossibleTricks = null;//error here
+	        }
+        }
+
+        System.out.println("same type tricks: " + myPossibleTricks);
+        
+        return myPossibleTricks;
+        
+        
         ArrayList<Trick> trickArray = new ArrayList<Trick>();
 
         switch (currentTrickType) {
@@ -777,37 +831,49 @@ public class Hand extends ListOfCards {
         }
     }*/
     
+    // unlike getAllTricks() which show all posibility of tricks in your hands,
+    // getOrganizedTricks favour Fives to Pairs to Singles
+    // so it would not give a single trick that would break up fives and pairs
+    // and it would not give a pair that would break up fives
+    
+    public ArrayList<Trick> getOrganizedTricks() {
+    	Hand localHand = new Hand(this);
+    	ArrayList<Trick> organizedTricks = new ArrayList<Trick>();
+
+    	//fives
+    	ArrayList<Trick> fiveTricks = localHand.getFiveTricks();
+    	organizedTricks.addAll(fiveTricks);
+    	for (Trick trick : fiveTricks) {
+    		localHand.removeCard(trick.listOfCards);
+    	}
+    	
+    	//pairs
+    	ArrayList<Trick> pairTricks = localHand.getPairTricks();
+    	organizedTricks.addAll(pairTricks);
+    	for (Trick trick : pairTricks) {
+    		localHand.removeCard(trick.listOfCards);
+    	}
+    	
+    	//pairs
+    	ArrayList<Trick> singleTricks = localHand.getSingleTricks();
+    	organizedTricks.addAll(singleTricks);
+    	
+        return organizedTricks;
+    }
+    
     /**
-     * Returns an ArrayList of Tricks playable that beats currTrick
+     * Given a trickList, choose a subset of the trickList that is a legal move (relative to currTrick)
      * 
      * @param currTrick Trick to beat 
+     * @param trickList list to choose from
      * @return an ArrayList of playable tricks
      */
-    public ArrayList<Trick> getLegalTricks(Trick currTrick) {
-    	ArrayList<Trick> myPossibleTricks;
+    public ArrayList<Trick> getLegalTricks(Trick currTrick, ArrayList<Trick> trickList) {
     	
-    	// get appropriate types of tricks (wrt currTrick)
-        if (Controller.historyOfTricks.size() == 0 && currTrick == null) { // this is first player so return all legal tricks possible
-        	myPossibleTricks = this.getAllTricks();
-        } else {
-	        switch (currTrick.trickType()) {
-	            case SINGLE: 		myPossibleTricks = getSingleTricks(); break;
-	            case PAIR: 			myPossibleTricks = getPairTricks(); break;
-	            case STRAIGHTFLUSH: myPossibleTricks = getStraightFlushTricks(); break;
-	            case FOUROFAKIND: 	myPossibleTricks = getFourOfAKindTricks(); break;
-	            case FULLHOUSE: 	myPossibleTricks = getFullHouseTricks(); break;
-	            case FLUSH: 		myPossibleTricks = getFlushTricks(); break;
-	            case STRAIGHT: 		myPossibleTricks = getStraightTricks(); break;
-	            case PASS: 			myPossibleTricks = getAllTricks(); break;
-	            default: 			myPossibleTricks = null;//error here
-	        }
-        }
-
-        //System.out.println("same type tricks: " + myPossibleTricks);
         ArrayList<Trick> myValidTricks = new ArrayList<Trick>();
 
         //all tricks which are not well-formed are removed (ie it beats currTrick therefore a legal move)
-        for (Trick trick : myPossibleTricks) {
+        for (Trick trick : trickList) {
             if (Controller.isWellFormed(trick, currTrick)) {
                 myValidTricks.add(trick);
             }
@@ -818,7 +884,6 @@ public class Hand extends ListOfCards {
             myValidTricks.add(trickOut);
         }
 
-        //System.out.println("valid tricks: " + myValidTricks);
         return myValidTricks;
     }
     
@@ -839,6 +904,15 @@ public class Hand extends ListOfCards {
     		return (myValidTricks.size() == 2);
     	else
     		return (myValidTricks.size() == 1);
+    }
+    
+    public static ArrayList<Trick> filterTrickType( ArrayList<Trick> tricks, Trick.TrickType trickType) {
+    	ArrayList<Trick> filteredTricks = new ArrayList<Trick>();
+    	for (Trick trick : tricks) {
+    		if ( trick.trickType() == trickType )
+    			filteredTricks.add(trick);
+    	}
+    	return filteredTricks;
     }
 }
 
